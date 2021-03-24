@@ -61,7 +61,28 @@ CREATE TABLE users
 
 ```
 
+Generamos en el backend hecho en spring un .jar
 
+```sh
+mvn package
+```
+
+luego miramos si funciona bien 
+```sh
+java -jar ./target/employee-0.0.1-SNAPSHOT.jar
+```
+
+Luego generamos una imagen en docker
+
+```sh
+docker build -t "spring-boot-docker" .
+```
+
+luego agreamos la image en un contenerdor 
+
+```sh 
+docker run spring-boot-docker -p 8080:8080 spring-boot-docker:latest
+```
 
 
 
