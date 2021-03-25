@@ -61,28 +61,6 @@ CREATE TABLE users
 
 ```
 
-Generamos en el backend hecho en spring un .jar
-
-```sh
-mvn package
-```
-
-luego miramos si funciona bien 
-```sh
-java -jar ./target/employee-0.0.1-SNAPSHOT.jar
-```
-
-Luego generamos una imagen en docker
-
-```sh
-sudo docker build -t "spring-boot-docker" .
-```
-
-luego agreamos la image en un contenerdor 
-
-```sh 
-sudo docker run spring-boot-docker -p 8080:8080 spring-boot-docker:latest
-```
 
 Creamos una conexion desde docker con network 
 
@@ -90,19 +68,19 @@ Creamos una conexion desde docker con network
 sudo docker network create --driver bridge my-net
 ```
 
-miramos la conexiones en docker 
+Miramos la conexiones en docker 
 
 ```sh 
 sudo  docker network ls
 ```
 
-Desconectamos el network don contenedor de mysql_container
+Desconectamos el network con contenedor de mysql_container
 
 ```sh
 sudo docker network disconnect bridge mysql_container
 ```
 
-Agregamos la red de my-net a contectamos al contendot de mysql_container
+Agregamos la red de my-net a contectamos al contendor de mysql_container
 
 ```sh
 sudo docker network connect my-net  mysql_container
@@ -153,3 +131,44 @@ Miramos la conexion de my-net mysql_container
 ]
 
 ```
+
+La conexion de nuentra aplicaion
+
+```sh
+spring.datasource.url=jdbc:mysql://localhost::13306/borisbd?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+```
+
+La cambiamos por la conexion del contenedor donde esta base de datos
+```sh
+spring.datasource.url=jdbc:mysql://mysql_container/borisbd?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+```
+
+Generamos en el backend hecho en spring en un .jar
+
+```sh
+mvn package
+```
+Generamos en el backend hecho en spring en un .jar sin la pruebas unitarias
+
+```sh
+mvn clean install -Dmaven.test.skip=true
+```
+
+Luego miramos si funciona bien 
+```sh
+java -jar ./target/employee-0.0.1-SNAPSHOT.jar
+```
+
+Luego generamos una imagen en docker donde nuestro proyecto de spring y en es mismo lugar debe de estar un archivo Dockerfile
+
+```sh
+sudo docker build -t user/users_service:V1 .
+```
+
+luego agreamos la image en un contenerdor 
+
+```sh 
+sudo docker run --network my-net -d -p 8080:8080 --name (nombre_contenedor)users_container  (IdUser)b15b8672a0f6
+```
+Ejemplo de los videos
+https://www.youtube.com/watch?v=ux1uzPAMRzk&t=532s&ab_channel=JulioCSanchez-DevOps
